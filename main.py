@@ -129,6 +129,17 @@ while loop:
         if missile.is_off_screen(540):
             missiles.remove(missile)  # Remove mísseis que saíram da tela
 
+    # Verificar colisões entre mísseis do jogador e mísseis inimigos
+    for missile in missiles[:]:
+        missile_rect = missile.get_rect()
+        for enemy_missile in enemy_missiles[:]:
+            enemy_missile_rect = pygame.Rect(enemy_missile.x, enemy_missile.y, enemy_missile.width, enemy_missile.height)
+            if missile_rect.colliderect(enemy_missile_rect):  # Colisão detectada
+                missiles.remove(missile)  # Remove o míssil do jogador
+                enemy_missiles.remove(enemy_missile)  # Remove o míssil inimigo
+                break  # Interrompe o loop para evitar erros de iteração
+
+
     # Gerar nova onda de inimigos se a lista estiver vazia
     if not enemies:
         enemies = generate_wave(enemy_ship_image, enemy_count, min_spacing=2, width=50, height=50, speed_factor=enemy_speed_factor)
