@@ -6,9 +6,13 @@ from entities.Missile import Missile  # Classe Missile
 
 # Caminho para as imagens
 path_images = './assets/images'
+# Caminho para a música de fundo
+path_music = './assets/sound_track'
+
 # Variável para controlar o aumento da velocidade dos inimigos
 enemy_speed_factor = 3.0
 
+# Função para gerar a onda de inimigos
 def generate_wave(enemy_image, number_of_enemies, min_spacing, width, height, speed_factor):
     """
     Gera uma onda de inimigos com espaçamento mínimo entre as naves.
@@ -36,6 +40,11 @@ def generate_wave(enemy_image, number_of_enemies, min_spacing, width, height, sp
 
 # Inicializa o pygame
 pygame.init()
+pygame.mixer.init()  # Inicializa o mixer para som
+
+# Carregar e tocar a música de fundo
+pygame.mixer.music.load(f'{path_music}/02 Las Vegas.mp3')  # Carrega o arquivo de música
+pygame.mixer.music.play(loops=-1, start=0.0)  # Toca a música em loop (-1 significa loop infinito)
 
 # Configuração da janela
 window = pygame.display.set_mode([960, 540])
