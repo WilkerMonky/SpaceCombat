@@ -59,8 +59,9 @@ player_ship_image = pygame.image.load(f'{path_images}/sprite_nave_pequena.png')
 enemy_ship_image = pygame.image.load(f'{path_images}/naveROxa.webp')
 missile_image = pygame.image.load(f'{path_images}/missile.png')  # Caminho correto da imagem do míssil
 
-# Fonte para a mensagem de derrota
+# Fonte para a mensagem de derrota e pontuação
 font = pygame.font.Font(None, 74)
+score_font = pygame.font.Font(None, 36)  # Fonte para a pontuação
 
 # Variáveis do fundo
 background_y = 0
@@ -87,10 +88,19 @@ loop = True
 clock = pygame.time.Clock()  # Para limitar os FPS
 game_over = False
 
+# Inicializa a pontuação
+start_time = pygame.time.get_ticks()  # Marca o tempo de início do jogo
+score = 0  # Pontuação inicial
+
 # Função para desenhar a mensagem de derrota
 def draw_game_over():
     game_over_text = font.render("GAME OVER", True, (255, 0, 0))
     window.blit(game_over_text, (300, 200))
+
+# Função para desenhar a pontuação
+def draw_score(score):
+    score_text = score_font.render(f"Score: {score}", True, (255, 255, 255))
+    window.blit(score_text, (10, 10))  # Desenha no canto superior esquerdo
 
 while loop:
     for events in pygame.event.get():
@@ -131,17 +141,6 @@ while loop:
         missile.move()
         if missile.is_off_screen(540):
             missiles.remove(missile)  # Remove mísseis que saíram da tela
-
-    # Verificar colisões entre mísseis do jogador e mísseis inimigos
-    for missile in missiles[:]:
-        missile_rect = missile.get_rect()
-        for enemy_missile in enemy_missiles[:]:
-            enemy_missile_rect = pygame.Rect(enemy_missile.x, enemy_missile.y, enemy_missile.width, enemy_missile.height)
-            if missile_rect.colliderect(enemy_missile_rect):  # Colisão detectada
-                missiles.remove(missile)  # Remove o míssil do jogador
-                enemy_missiles.remove(enemy_missile)  # Remove o míssil inimigo
-                break  # Interrompe o loop para evitar erros de iteração
-
 
     # Gerar nova onda de inimigos se a lista estiver vazia
     if not enemies:
@@ -184,23 +183,19 @@ while loop:
         enemy_missile_rect = pygame.Rect(enemy_missile.x, enemy_missile.y, enemy_missile.width, enemy_missile.height)
         if player_rect.colliderect(enemy_missile_rect):  # Colisão detectada
             game_over = True
+            pygame.mixer.music.set_volume(0.0) 
+            game_over_sound.play()  # Toca o som de derrota
             break
+
+    # Atualizar a pontuação (baseada no tempo de jogo)
+    if not game_over:
+        elapsed_time = (pygame.time.get_ticks() - start_time) // 1000  # Tempo em segundos
+        score = elapsed_time  # A pontuação é igual ao tempo de vida em segundos
 
     # A cada 10 inimigos destruídos, duplica a quantidade de inimigos na próxima onda
     if enemies_destroyed >= 10:
         enemy_count *= 2  # Duplica o número de inimigos
         enemies_destroyed = 0  # Reseta o contador
-
-
-    # Verificar colisões entre mísseis dos inimigos e a nave do jogador
-    player_rect = pygame.Rect(player_ship.x_position, player_ship.y_position, player_ship.image.get_width(), player_ship.image.get_height())
-    for enemy_missile in enemy_missiles[:]:
-        enemy_missile_rect = pygame.Rect(enemy_missile.x, enemy_missile.y, enemy_missile.width, enemy_missile.height)
-        if player_rect.colliderect(enemy_missile_rect):  # Colisão detectada
-            game_over = True
-            pygame.mixer.music.set_volume(0.0) 
-            game_over_sound.play()  # Toca o som de derrota
-            break
 
     # Desenho dos elementos na tela
     window.blit(background_image, (0, background_y))            # Fundo principal
@@ -212,6 +207,9 @@ while loop:
         enemy.draw(window)
     for enemy_missile in enemy_missiles:                        # Desenhar os mísseis inimigos
         enemy_missile.draw(window)
+
+    # Desenhar a pontuação na tela
+    draw_score(score)
 
     # Atualizar a tela
     pygame.display.update()
