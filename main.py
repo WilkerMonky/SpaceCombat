@@ -171,6 +171,6 @@ while loop:
 
     # Atualizar a tela
     pygame.display.update()
-    clock.tick(60)  # Limitar a 60 FPS
+    clock.tick(300)  # Limitar a 60 FPS
 
 pygame.quit()
