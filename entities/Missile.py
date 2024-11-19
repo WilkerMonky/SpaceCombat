@@ -1,5 +1,4 @@
 import pygame
-
 class Missile:
     def __init__(self, x, y, width, height, image, velocity):
         """
@@ -41,3 +40,11 @@ class Missile:
         :param surface: Superfície onde o míssil será desenhado.
         """
         surface.blit(self.image, (self.x, self.y))
+
+    def get_rect(self):
+        """
+        Retorna o retângulo de colisão do míssil.
+
+        :return: pygame.Rect representando o míssil.
+        """
+        return pygame.Rect(self.x, self.y, self.width, self.height)
