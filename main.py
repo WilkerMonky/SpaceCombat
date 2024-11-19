@@ -9,21 +9,23 @@ path_images = './assets/images'
 # Caminho para a música de fundo
 path_music = './assets/sound_track'
 
+# Caminho para o arquivo de recorde
+record_file = 'record.txt'
+
 # Variável para controlar o aumento da velocidade dos inimigos
 enemy_speed_factor = 2.0
 
 # Função para gerar a onda de inimigos
-def generate_wave(enemy_image, number_of_enemies, min_spacing, width, height, speed_factor):
-    """
-    Gera uma onda de inimigos com espaçamento mínimo entre as naves.
-    """
+def generate_wave(enemy_images, number_of_enemies, min_spacing, width, height, speed_factor):
     enemies = []
-
     for _ in range(number_of_enemies):
         while True:
             x_position = random.randint(0, 960 - width)
             y_position = random.randint(-200, -50)  # Aparece fora da tela
             velocity = random.randint(2, 5) * speed_factor  # Aumentar velocidade com o fator
+
+            # Escolhe uma imagem aleatória para o inimigo
+            enemy_image = random.choice(enemy_images)
 
             # Verificar espaçamento mínimo com outras naves
             too_close = any(
@@ -31,12 +33,27 @@ def generate_wave(enemy_image, number_of_enemies, min_spacing, width, height, sp
                 and abs(y_position - enemy.y_position) < min_spacing
                 for enemy in enemies
             )
-            
             if not too_close:
                 enemies.append(Enemy_Ship(enemy_image, x_position, y_position, velocity, width, height))
                 break
-
     return enemies
+
+
+# Função para carregar o recorde do arquivo
+def load_record():
+    try:
+        with open(record_file, 'r') as file:
+            lines = file.readlines()
+            record = int(lines[0].strip())
+            record_kills = int(lines[1].strip())
+    except (FileNotFoundError, ValueError, IndexError):
+        record, record_kills = 0, 0  # Se o arquivo não existir ou houver erro, define os valores como 0
+    return record, record_kills
+
+# Função para salvar o recorde no arquivo
+def save_record(record, record_kills):
+    with open(record_file, 'w') as file:
+        file.write(f"{record}\n{record_kills}")
 
 # Inicializa o pygame
 pygame.init()
@@ -44,7 +61,7 @@ pygame.mixer.init()  # Inicializa o mixer para som
 
 # Carregar e tocar a música de fundo
 pygame.mixer.music.load(f'{path_music}/02 Las Vegas.mp3')  # Carrega o arquivo de música
-pygame.mixer.music.set_volume(0.1) 
+pygame.mixer.music.set_volume(0.0)
 pygame.mixer.music.play(loops=-1, start=0.0)  # Toca a música em loop (-1 significa loop infinito)
 
 # Configuração da janela
@@ -54,54 +71,80 @@ pygame.display.set_caption('First Game')
 # Carregar imagens
 # Carregar o som de derrota
 game_over_sound = pygame.mixer.Sound(f'{path_music}/fail.mp3')  # Caminho do arquivo de som
+game_over_sound.set_volume(0.1)  # Diminui o volume do som de game over
+
 background_image = pygame.image.load(f'{path_images}/space bg game.png')
 player_ship_image = pygame.image.load(f'{path_images}/sprite_nave_pequena.png')
 enemy_ship_image = pygame.image.load(f'{path_images}/naveROxa.webp')
-missile_image = pygame.image.load(f'{path_images}/missile.png')  # Caminho correto da imagem do míssil
+enemy_ship_image2 = pygame.image.load(f'{path_images}/nave1.png')
+enemy_ship_image3 = pygame.image.load(f'{path_images}/nave2.png')
+enemy_ship_image4 = pygame.image.load(f'{path_images}/nave3.png')
+enemy_ship_image5 = pygame.image.load(f'{path_images}/nave4.png')
+enemy_ship_image6 = pygame.image.load(f'{path_images}/nave5.png')
+enemy_ship_image7 = pygame.image.load(f'{path_images}/nave6.png')
+enemy_ship_image8 = pygame.image.load(f'{path_images}/nave7.png')
+enemy_ship_image9 = pygame.image.load(f'{path_images}/nave8.png')
+enemy_ship_images = [enemy_ship_image, enemy_ship_image2, enemy_ship_image3, enemy_ship_image4, enemy_ship_image5, enemy_ship_image6, enemy_ship_image7, enemy_ship_image8, enemy_ship_image9]
+missile_image = pygame.image.load(f'{path_images}/missile.png')
 
 # Fonte para a mensagem de derrota e pontuação
 font = pygame.font.Font(None, 74)
-score_font = pygame.font.Font(None, 36)  # Fonte para a pontuação
+score_font = pygame.font.Font(None, 20)
+record_font = pygame.font.Font(None, 20)
 
 # Variáveis do fundo
 background_y = 0
-background_speed = 2  # Velocidade de movimento do fundo
+background_speed = 2
 
 # Instância da nave do jogador
 player_ship = Space_Ship(player_ship_image, 420, 400, 10)
 
-# Lista para armazenar inimigos, mísseis da nave principal e mísseis inimigos
+# Listas para armazenar inimigos, mísseis da nave principal e mísseis inimigos
 enemies = []
 missiles = []
 enemy_missiles = []
 
 wave_number = 1
 enemy_count = 5
-enemies_destroyed = 0  # Contador de inimigos destruídos
+enemies_destroyed = 0
+kills = 0  # Contador de kills
 
 # Cooldown de disparo
-last_shot_time = 0  # Tempo do último disparo (em milissegundos)
-missile_cooldown = 500  # Cooldown em milissegundos (1 segundo)
+last_shot_time = 0
+missile_cooldown = 500
 
 # Variáveis para o loop
 loop = True
-clock = pygame.time.Clock()  # Para limitar os FPS
+clock = pygame.time.Clock()
 game_over = False
 
-# Inicializa a pontuação
-start_time = pygame.time.get_ticks()  # Marca o tempo de início do jogo
-score = 0  # Pontuação inicial
+# Inicializa a pontuação, tempo e recordes
+start_time = pygame.time.get_ticks()
+score = 0
+record, record_kills = load_record()
 
-# Função para desenhar a mensagem de derrota
+# Funções para desenhar mensagens e pontuações
 def draw_game_over():
     game_over_text = font.render("GAME OVER", True, (255, 0, 0))
     window.blit(game_over_text, (300, 200))
 
-# Função para desenhar a pontuação
 def draw_score(score):
     score_text = score_font.render(f"Score: {score}", True, (255, 255, 255))
-    window.blit(score_text, (10, 10))  # Desenha no canto superior esquerdo
+    window.blit(score_text, (10, 10))
 
+def draw_record(record):
+    record_text = record_font.render(f"Record: {record}", True, (255, 255, 255))
+    window.blit(record_text, (10, 50))
+
+def draw_kills(kills):
+    kills_text = score_font.render(f"Kills: {kills}", True, (255, 255, 255))
+    window.blit(kills_text, (10, 90))
+
+def draw_record_kills(record_kills):
+    record_kills_text = record_font.render(f"Record Kills: {record_kills}", True, (255, 255, 255))
+    window.blit(record_kills_text, (10, 130))
+
+# Loop principal do jogo
 while loop:
     for events in pygame.event.get():
         if events.type == pygame.QUIT:
@@ -111,13 +154,19 @@ while loop:
 
     if game_over:
         draw_game_over()
+        draw_score(score)
+        draw_record(record)
+        draw_kills(kills)
+        draw_record_kills(record_kills)
         pygame.display.update()
-        continue  # Não continua o loop de jogo após a derrota
 
-    # Movimentação da nave do jogador
+        # Tocar o som de Game Over apenas uma vez
+        game_over_sound.play()
+
+        continue
+
     player_ship.move(teclas)
 
-    # Disparar um míssil ao pressionar espaço, respeitando o cooldown
     current_time = pygame.time.get_ticks()
     if teclas[pygame.K_SPACE] and current_time - last_shot_time >= missile_cooldown:
         missile = Missile(
@@ -126,93 +175,98 @@ while loop:
             width=10,
             height=20,
             image=missile_image,
-            velocity=-5  # Velocidade para cima
+            velocity=-5
         )
         missiles.append(missile)
-        last_shot_time = current_time  # Atualiza o tempo do último disparo
+        last_shot_time = current_time
 
-    # Atualizar a posição do fundo
     background_y += background_speed
-    if background_y >= 540:  # Reiniciar o fundo quando ele sair da tela
+    if background_y >= 540:
         background_y = 0
 
-    # Movimentação e atualização dos mísseis da nave principal
     for missile in missiles[:]:
         missile.move()
         if missile.is_off_screen(540):
-            missiles.remove(missile)  # Remove mísseis que saíram da tela
+            missiles.remove(missile)
 
-    # Gerar nova onda de inimigos se a lista estiver vazia
-    if not enemies:
-        enemies = generate_wave(enemy_ship_image, enemy_count, min_spacing=2, width=50, height=50, speed_factor=enemy_speed_factor)
-        wave_number += 1
-        enemy_speed_factor += 0.2   
-        enemy_count += 2  # Aumenta o número de inimigos por onda
+        if not enemies:
+            enemies = generate_wave(
+            enemy_ship_images,  # Lista de imagens de naves inimigas
+            enemy_count, 
+            min_spacing=2, 
+            width=50, 
+            height=50, 
+            speed_factor=enemy_speed_factor
+            )
+            wave_number += 1
+            enemy_speed_factor += 0.1
+            enemy_count += 2
 
-    # Movimentação e atualização dos inimigos
+
+
     for enemy in enemies[:]:
         enemy.move()
         if enemy.is_off_screen():
-            enemies.remove(enemy)  # Remove inimigos que saíram da tela
+            enemies.remove(enemy)
 
-        # Disparar mísseis dos inimigos
         enemy_missile = enemy.fire(current_time, missile_image)
         if enemy_missile:
             enemy_missiles.append(enemy_missile)
 
-    # Movimentação e atualização dos mísseis dos inimigos
     for enemy_missile in enemy_missiles[:]:
         enemy_missile.move()
         if enemy_missile.is_off_screen(540):
-            enemy_missiles.remove(enemy_missile)  # Remove mísseis que saíram da tela
+            enemy_missiles.remove(enemy_missile)
 
-    # Verificar colisões entre mísseis da nave principal e os inimigos
     for missile in missiles[:]:
         missile_rect = missile.get_rect()
         for enemy in enemies[:]:
             enemy_rect = pygame.Rect(enemy.x_position, enemy.y_position, enemy.width, enemy.height)
-            if missile_rect.colliderect(enemy_rect):  # Colisão detectada
-                missiles.remove(missile)  # Remove o míssil
-                enemies.remove(enemy)  # Remove o inimigo
-                enemies_destroyed += 1  # Incrementa o contador de inimigos destruídos
-                break  # Interrompe o loop para evitar erros de iteração
+            if missile_rect.colliderect(enemy_rect):
+                missiles.remove(missile)
+                enemies.remove(enemy)
+                enemies_destroyed += 1
+                kills += 1
+                if kills > record_kills:
+                    record_kills = kills
+                    save_record(record, record_kills)
+                break
 
-    # Verificar colisões entre mísseis dos inimigos e a nave do jogador
     player_rect = pygame.Rect(player_ship.x_position, player_ship.y_position, player_ship.image.get_width(), player_ship.image.get_height())
     for enemy_missile in enemy_missiles[:]:
         enemy_missile_rect = pygame.Rect(enemy_missile.x, enemy_missile.y, enemy_missile.width, enemy_missile.height)
-        if player_rect.colliderect(enemy_missile_rect):  # Colisão detectada
+        if player_rect.colliderect(enemy_missile_rect):
             game_over = True
-            pygame.mixer.music.set_volume(0.0) 
-            game_over_sound.play()  # Toca o som de derrota
             break
 
-    # Atualizar a pontuação (baseada no tempo de jogo)
+    if enemies_destroyed >= 20:
+        enemy_count *= 2
+        enemies_destroyed = 0
+
     if not game_over:
-        elapsed_time = (pygame.time.get_ticks() - start_time) // 1000  # Tempo em segundos
-        score = elapsed_time  # A pontuação é igual ao tempo de vida em segundos
+        elapsed_time = (pygame.time.get_ticks() - start_time) // 1000
+        score = elapsed_time
 
-    # A cada 10 inimigos destruídos, duplica a quantidade de inimigos na próxima onda
-    if enemies_destroyed >= 10:
-        enemy_count *= 2  # Duplica o número de inimigos
-        enemies_destroyed = 0  # Reseta o contador
+    if game_over and score > record:
+        record = score
+        save_record(record, record_kills)
 
-    # Desenho dos elementos na tela
-    window.blit(background_image, (0, background_y))            # Fundo principal
-    window.blit(background_image, (0, background_y - 540))      # Fundo secundário para loop
-    player_ship.draw(window)                                    # Nave do jogador
-    for missile in missiles:                                    # Desenhar os mísseis da nave principal
+    window.blit(background_image, (0, background_y))
+    window.blit(background_image, (0, background_y - 540))
+    player_ship.draw(window)
+    for missile in missiles:
         missile.draw(window)
-    for enemy in enemies:                                       # Desenhar os inimigos
+    for enemy in enemies:
         enemy.draw(window)
-    for enemy_missile in enemy_missiles:                        # Desenhar os mísseis inimigos
+    for enemy_missile in enemy_missiles:
         enemy_missile.draw(window)
 
-    # Desenhar a pontuação na tela
     draw_score(score)
+    draw_record(record)
+    draw_kills(kills)
+    draw_record_kills(record_kills)
 
-    # Atualizar a tela
     pygame.display.update()
-    clock.tick(60)  # Limitar a 60 FPS
+    clock.tick(60)
 
 pygame.quit()
