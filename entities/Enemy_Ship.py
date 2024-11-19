@@ -1,7 +1,7 @@
 import pygame
 import random
-from Space_Ship import Space_Ship
-from Missile import Missile
+from entities.Space_Ship import Space_Ship
+from entities.Missile import Missile
 class Enemy_Ship(Space_Ship):
     def __init__(self, image, x_position, y_position, velocity, width, height, fire_rate=1000):
         """
@@ -54,3 +54,7 @@ class Enemy_Ship(Space_Ship):
                 velocity=5  # Míssil vai para baixo
             )
         return None
+    
+    def is_off_screen(self):
+        # Verificar se a nave inimiga está abaixo da tela
+        return self.y_position > 540

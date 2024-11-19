@@ -34,8 +34,6 @@ def generate_wave(enemy_image, number_of_enemies, min_spacing, width, height, sp
 
     return enemies
 
-
-
 # Inicializa o pygame
 pygame.init()
 
@@ -59,9 +57,11 @@ background_speed = 2  # Velocidade de movimento do fundo
 # Instância da nave do jogador
 player_ship = Space_Ship(player_ship_image, 420, 400, 10)
 
-# Lista para armazenar inimigos e mísseis
+# Lista para armazenar inimigos, mísseis da nave principal e mísseis inimigos
 enemies = []
 missiles = []
+enemy_missiles = []
+
 wave_number = 1
 enemy_count = 5
 enemies_destroyed = 0  # Contador de inimigos destruídos
@@ -114,7 +114,7 @@ while loop:
     if background_y >= 540:  # Reiniciar o fundo quando ele sair da tela
         background_y = 0
 
-    # Movimentação e atualização dos mísseis
+    # Movimentação e atualização dos mísseis da nave principal
     for missile in missiles[:]:
         missile.move()
         if missile.is_off_screen(540):
@@ -124,11 +124,8 @@ while loop:
     if not enemies:
         enemies = generate_wave(enemy_ship_image, enemy_count, min_spacing=2, width=50, height=50, speed_factor=enemy_speed_factor)
         wave_number += 1
-        enemy_speed_factor +=1
+        enemy_speed_factor += 0.2
         enemy_count += 2  # Aumenta o número de inimigos por onda
-
-
-
 
     # Movimentação e atualização dos inimigos
     for enemy in enemies[:]:
@@ -136,7 +133,18 @@ while loop:
         if enemy.is_off_screen():
             enemies.remove(enemy)  # Remove inimigos que saíram da tela
 
-    # Verificar colisões entre mísseis e inimigos
+        # Disparar mísseis dos inimigos
+        enemy_missile = enemy.fire(current_time, missile_image)
+        if enemy_missile:
+            enemy_missiles.append(enemy_missile)
+
+    # Movimentação e atualização dos mísseis dos inimigos
+    for enemy_missile in enemy_missiles[:]:
+        enemy_missile.move()
+        if enemy_missile.is_off_screen(540):
+            enemy_missiles.remove(enemy_missile)  # Remove mísseis que saíram da tela
+
+    # Verificar colisões entre mísseis da nave principal e os inimigos
     for missile in missiles[:]:
         missile_rect = missile.get_rect()
         for enemy in enemies[:]:
@@ -147,14 +155,13 @@ while loop:
                 enemies_destroyed += 1  # Incrementa o contador de inimigos destruídos
                 break  # Interrompe o loop para evitar erros de iteração
 
-    # Verificar colisão entre a nave do jogador e os inimigos
+    # Verificar colisões entre mísseis dos inimigos e a nave do jogador
     player_rect = pygame.Rect(player_ship.x_position, player_ship.y_position, player_ship.image.get_width(), player_ship.image.get_height())
-    for enemy in enemies[:]:
-        enemy_rect = pygame.Rect(enemy.x_position, enemy.y_position, enemy.width, enemy.height)
-        if player_rect.colliderect(enemy_rect):  # Colisão detectada
+    for enemy_missile in enemy_missiles[:]:
+        enemy_missile_rect = pygame.Rect(enemy_missile.x, enemy_missile.y, enemy_missile.width, enemy_missile.height)
+        if player_rect.colliderect(enemy_missile_rect):  # Colisão detectada
             game_over = True
             break
-
 
     # A cada 10 inimigos destruídos, duplica a quantidade de inimigos na próxima onda
     if enemies_destroyed >= 10:
@@ -165,13 +172,15 @@ while loop:
     window.blit(background_image, (0, background_y))            # Fundo principal
     window.blit(background_image, (0, background_y - 540))      # Fundo secundário para loop
     player_ship.draw(window)                                    # Nave do jogador
-    for missile in missiles:                                    # Desenhar os mísseis
+    for missile in missiles:                                    # Desenhar os mísseis da nave principal
         missile.draw(window)
     for enemy in enemies:                                       # Desenhar os inimigos
         enemy.draw(window)
+    for enemy_missile in enemy_missiles:                        # Desenhar os mísseis inimigos
+        enemy_missile.draw(window)
 
     # Atualizar a tela
     pygame.display.update()
-    clock.tick(165)  # Limitar a 60 FPS
+    clock.tick(60)  # Limitar a 60 FPS
 
 pygame.quit()
