@@ -10,7 +10,7 @@ path_images = './assets/images'
 path_music = './assets/sound_track'
 
 # Variável para controlar o aumento da velocidade dos inimigos
-enemy_speed_factor = 3.0
+enemy_speed_factor = 2.0
 
 # Função para gerar a onda de inimigos
 def generate_wave(enemy_image, number_of_enemies, min_spacing, width, height, speed_factor):
@@ -44,6 +44,7 @@ pygame.mixer.init()  # Inicializa o mixer para som
 
 # Carregar e tocar a música de fundo
 pygame.mixer.music.load(f'{path_music}/02 Las Vegas.mp3')  # Carrega o arquivo de música
+pygame.mixer.music.set_volume(0.1) 
 pygame.mixer.music.play(loops=-1, start=0.0)  # Toca a música em loop (-1 significa loop infinito)
 
 # Configuração da janela
@@ -51,6 +52,8 @@ window = pygame.display.set_mode([960, 540])
 pygame.display.set_caption('First Game')
 
 # Carregar imagens
+# Carregar o som de derrota
+game_over_sound = pygame.mixer.Sound(f'{path_music}/fail.mp3')  # Caminho do arquivo de som
 background_image = pygame.image.load(f'{path_images}/space bg game.png')
 player_ship_image = pygame.image.load(f'{path_images}/sprite_nave_pequena.png')
 enemy_ship_image = pygame.image.load(f'{path_images}/naveROxa.webp')
@@ -144,7 +147,7 @@ while loop:
     if not enemies:
         enemies = generate_wave(enemy_ship_image, enemy_count, min_spacing=2, width=50, height=50, speed_factor=enemy_speed_factor)
         wave_number += 1
-        enemy_speed_factor += 0.2
+        enemy_speed_factor += 0.2   
         enemy_count += 2  # Aumenta o número de inimigos por onda
 
     # Movimentação e atualização dos inimigos
@@ -187,6 +190,17 @@ while loop:
     if enemies_destroyed >= 10:
         enemy_count *= 2  # Duplica o número de inimigos
         enemies_destroyed = 0  # Reseta o contador
+
+
+    # Verificar colisões entre mísseis dos inimigos e a nave do jogador
+    player_rect = pygame.Rect(player_ship.x_position, player_ship.y_position, player_ship.image.get_width(), player_ship.image.get_height())
+    for enemy_missile in enemy_missiles[:]:
+        enemy_missile_rect = pygame.Rect(enemy_missile.x, enemy_missile.y, enemy_missile.width, enemy_missile.height)
+        if player_rect.colliderect(enemy_missile_rect):  # Colisão detectada
+            game_over = True
+            pygame.mixer.music.set_volume(0.0) 
+            game_over_sound.play()  # Toca o som de derrota
+            break
 
     # Desenho dos elementos na tela
     window.blit(background_image, (0, background_y))            # Fundo principal
