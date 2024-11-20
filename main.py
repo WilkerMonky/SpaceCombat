@@ -157,43 +157,22 @@ def draw_restart_button():
 
     return pygame.Rect(button_x, button_y, button_width, button_height)
 
-def restart_game():
-    # Reiniciar todas as variáveis do jogo
-    global player_ship, enemies, missiles, enemy_missiles
-    global wave_number, enemy_count, enemies_destroyed, kills
-    global last_shot_time, game_over, start_time, score, record, record_kills, enemy_speed_factor
+# Cooldown inicial de disparo
+missile_cooldown = 500  # Tempo inicial em milissegundos
 
-    # Reinicializar todas as variáveis do jogo
-    player_ship = Space_Ship(player_ship_image, 420, 400, 10)
-    enemies = []
-    missiles = []
-    enemy_missiles = []
-    wave_number = 1
-    enemy_count = 5
-    enemies_destroyed = 0
-    kills = 0
-    last_shot_time = 0
-    game_over = False
-    start_time = pygame.time.get_ticks()
-    score = 0
-    enemy_speed_factor = 2.0
-
-    # Variável para controlar o som de game over
+# Variável para controlar se o som de Game Over foi tocado
 game_over_sound_played = False
 
+# Função para desenhar o botão de restart
 def draw_restart_button():
-    # Definir o tamanho e posição do botão
-    button_width, button_height = 200, 50
-    button_x, button_y = (960 - button_width) // 2, 300
+    button_text = font.render("RESTART", True, (255, 0, 0))
+    text_width, text_height = button_text.get_size()
+    button_x = (840 - text_width) // 2
+    button_y = 300  # Posiciona abaixo da mensagem "GAME OVER"
+    window.blit(button_text, (button_x, button_y))
+    return pygame.Rect(button_x, button_y, text_width, text_height)
 
-    # Desenhar o botão
-    pygame.draw.rect(window, (0, 128, 255), (button_x, button_y, button_width, button_height))
-    button_text = font.render("Restart", True, (255, 255, 255))
-    text_rect = button_text.get_rect(center=(button_x + button_width // 2, button_y + button_height // 2))
-    window.blit(button_text, text_rect)
-
-    return pygame.Rect(button_x, button_y, button_width, button_height)
-
+# Função para reiniciar o jogo
 def restart_game():
     global player_ship, enemies, missiles, enemy_missiles
     global wave_number, enemy_count, enemies_destroyed, kills
@@ -219,21 +198,6 @@ def restart_game():
     pygame.mixer.music.play(loops=-1, start=0.0)
     game_over_sound_played = False  # Resetar controle do som de Game Over
 
-def draw_restart_button():
-    # Definir o texto do botão
-    button_text = font.render("Restart", True, (255, 0, 0))
-    text_width, text_height = button_text.get_size()
-    
-    # Calcular a posição para centralizar o botão
-    button_x = (930 - text_width) // 2
-    button_y = 300  # Coloca abaixo da mensagem "GAME OVER"
-    
-    # Desenhar o retângulo do botão
-    pygame.draw.rect(window, (0, 0, 0), (button_x - 5, button_y - 10, text_width + 20, text_height + 20))
-    window.blit(button_text, (button_x, button_y))
-    
-    return pygame.Rect(button_x - 10, button_y - 10, text_width + 20, text_height + 20)
-
 # Loop principal do jogo
 while loop:
     for events in pygame.event.get():
@@ -254,7 +218,7 @@ while loop:
         draw_kills(kills)
         draw_record_kills(record_kills)
 
-        # Desenhar o botão de restart no mesmo estilo
+        # Desenhar o botão de restart
         restart_button = draw_restart_button()
 
         # Tocar o som de Game Over apenas uma vez
@@ -265,6 +229,9 @@ while loop:
 
         pygame.display.update()
         continue
+
+    # Ajustar o cooldown de disparo baseado na onda
+    missile_cooldown = max(100, 500 - (wave_number * 20))  # Reduz 20ms por onda, mínimo de 100ms
 
     player_ship.move(teclas)
 
@@ -369,5 +336,3 @@ while loop:
     clock.tick(60)
 
 pygame.quit()
-
-
