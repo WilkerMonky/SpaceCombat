@@ -61,7 +61,7 @@ pygame.mixer.init()  # Inicializa o mixer para som
 
 # Carregar e tocar a música de fundo
 pygame.mixer.music.load(f'{path_music}/02 Las Vegas.mp3')  # Carrega o arquivo de música
-pygame.mixer.music.set_volume(0.0)
+pygame.mixer.music.set_volume(0.1)
 pygame.mixer.music.play(loops=-1, start=0.0)  # Toca a música em loop (-1 significa loop infinito)
 
 # Configuração da janela
@@ -144,25 +144,126 @@ def draw_record_kills(record_kills):
     record_kills_text = record_font.render(f"Record Kills: {record_kills}", True, (255, 255, 255))
     window.blit(record_kills_text, (10, 130))
 
+def draw_restart_button():
+    # Definir o tamanho e posição do botão
+    button_width, button_height = 200, 50
+    button_x, button_y = (960 - button_width) // 2, 300
+
+    # Desenhar o botão
+    pygame.draw.rect(window, (0, 128, 255), (button_x, button_y, button_width, button_height))
+    button_text = font.render("Restart", True, (255, 255, 255))
+    text_rect = button_text.get_rect(center=(button_x + button_width // 2, button_y + button_height // 2))
+    window.blit(button_text, text_rect)
+
+    return pygame.Rect(button_x, button_y, button_width, button_height)
+
+def restart_game():
+    # Reiniciar todas as variáveis do jogo
+    global player_ship, enemies, missiles, enemy_missiles
+    global wave_number, enemy_count, enemies_destroyed, kills
+    global last_shot_time, game_over, start_time, score, record, record_kills, enemy_speed_factor
+
+    # Reinicializar todas as variáveis do jogo
+    player_ship = Space_Ship(player_ship_image, 420, 400, 10)
+    enemies = []
+    missiles = []
+    enemy_missiles = []
+    wave_number = 1
+    enemy_count = 5
+    enemies_destroyed = 0
+    kills = 0
+    last_shot_time = 0
+    game_over = False
+    start_time = pygame.time.get_ticks()
+    score = 0
+    enemy_speed_factor = 2.0
+
+    # Variável para controlar o som de game over
+game_over_sound_played = False
+
+def draw_restart_button():
+    # Definir o tamanho e posição do botão
+    button_width, button_height = 200, 50
+    button_x, button_y = (960 - button_width) // 2, 300
+
+    # Desenhar o botão
+    pygame.draw.rect(window, (0, 128, 255), (button_x, button_y, button_width, button_height))
+    button_text = font.render("Restart", True, (255, 255, 255))
+    text_rect = button_text.get_rect(center=(button_x + button_width // 2, button_y + button_height // 2))
+    window.blit(button_text, text_rect)
+
+    return pygame.Rect(button_x, button_y, button_width, button_height)
+
+def restart_game():
+    global player_ship, enemies, missiles, enemy_missiles
+    global wave_number, enemy_count, enemies_destroyed, kills
+    global last_shot_time, game_over, start_time, score, record, record_kills, enemy_speed_factor
+    global game_over_sound_played
+
+    # Reinicializar todas as variáveis do jogo
+    player_ship = Space_Ship(player_ship_image, 420, 400, 10)
+    enemies = []
+    missiles = []
+    enemy_missiles = []
+    wave_number = 1
+    enemy_count = 5
+    enemies_destroyed = 0
+    kills = 0
+    last_shot_time = 0
+    game_over = False
+    start_time = pygame.time.get_ticks()
+    score = 0
+    enemy_speed_factor = 2.0
+
+    # Reiniciar a música de fundo
+    pygame.mixer.music.play(loops=-1, start=0.0)
+    game_over_sound_played = False  # Resetar controle do som de Game Over
+
+def draw_restart_button():
+    # Definir o texto do botão
+    button_text = font.render("Restart", True, (255, 0, 0))
+    text_width, text_height = button_text.get_size()
+    
+    # Calcular a posição para centralizar o botão
+    button_x = (930 - text_width) // 2
+    button_y = 300  # Coloca abaixo da mensagem "GAME OVER"
+    
+    # Desenhar o retângulo do botão
+    pygame.draw.rect(window, (0, 0, 0), (button_x - 5, button_y - 10, text_width + 20, text_height + 20))
+    window.blit(button_text, (button_x, button_y))
+    
+    return pygame.Rect(button_x - 10, button_y - 10, text_width + 20, text_height + 20)
+
 # Loop principal do jogo
 while loop:
     for events in pygame.event.get():
         if events.type == pygame.QUIT:
             loop = False
+        if events.type == pygame.MOUSEBUTTONDOWN and game_over:
+            mouse_pos = pygame.mouse.get_pos()
+            if restart_button.collidepoint(mouse_pos):
+                restart_game()
 
     teclas = pygame.key.get_pressed()
 
     if game_over:
+        # Desenhar a tela de Game Over
         draw_game_over()
         draw_score(score)
         draw_record(record)
         draw_kills(kills)
         draw_record_kills(record_kills)
-        pygame.display.update()
+
+        # Desenhar o botão de restart no mesmo estilo
+        restart_button = draw_restart_button()
 
         # Tocar o som de Game Over apenas uma vez
-        game_over_sound.play()
+        if not game_over_sound_played:
+            pygame.mixer.music.stop()  # Parar música de fundo
+            game_over_sound.play()
+            game_over_sound_played = True  # Marcar que o som já foi tocado
 
+        pygame.display.update()
         continue
 
     player_ship.move(teclas)
@@ -191,18 +292,16 @@ while loop:
 
         if not enemies:
             enemies = generate_wave(
-            enemy_ship_images,  # Lista de imagens de naves inimigas
-            enemy_count, 
-            min_spacing=2, 
-            width=50, 
-            height=50, 
-            speed_factor=enemy_speed_factor
+                enemy_ship_images,  # Lista de imagens de naves inimigas
+                enemy_count, 
+                min_spacing=2, 
+                width=50, 
+                height=50, 
+                speed_factor=enemy_speed_factor
             )
             wave_number += 1
             enemy_speed_factor += 0.1
             enemy_count += 2
-
-
 
     for enemy in enemies[:]:
         enemy.move()
@@ -270,3 +369,5 @@ while loop:
     clock.tick(60)
 
 pygame.quit()
+
+
