@@ -1,7 +1,7 @@
 Fase 1: Análise [ ] 
 
     [ nome ] Problema selecionado e definido claramente.
-    [ nome ]  Compreensão aprofundada da natureza e desafios do problema.
+    [ nome ] Compreensão aprofundada da natureza e desafios do problema.
     [ nome ] Modelo matemático ou teórico desenvolvido para representar o problema.
 
 Fase 2: Planejamento [ ] 
