@@ -26,13 +26,13 @@ Gerenciamento:
 - **A dificuldade escala gradualmente, equilibrando a complexidade do jogo com a capacidade do hardware.**
 
 ---
-### **Objetivo do Jogo:**
+### **Objetivo do Jogo**
 - **O jogador deve pilotar sua nave espacial, destruir naves inimigas e desviar de seus ataques para sobreviver o maior tempo possível.**
 - **Pontos são ganhos ao destruir inimigos e sobreviver mais tempo.**
 - **O objetivo final é alcançar a maior pontuação possível.**
   
 ---
-### **Jogabilidade:**
+### **Jogabilidade**
 Teclas de Movimento:
 - **Seta para cima (↑) ou a tecla (W): Move a nave para cima.**
 - **Seta para baixo (↓) ou a tecla (S): Move a nave para baixo.**
