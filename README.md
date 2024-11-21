@@ -27,14 +27,14 @@ Fase 4: Programação e Teste
     [ nome ] Casos limite e situações especiais testados.
     [ nome ] Erros e problemas durante o teste de programa identificados e corrigidos.
 
-Documentação e Avaliação do Projeto  
+Fase 5: Documentação e Avaliação do Projeto  
 
     [ nome ] Documentação completa, incluindo especificação do algoritmo e análise de complexidade.
     [ nome ] Documentação revisada para clareza e rigor técnico.
     [ nome ] Avaliação da eficácia do algoritmo em termos de tempo de execução, uso de recursos e precisão na resolução do problema.
     [ nome ] Avaliação da colaboração da equipe e cumprimento dos prazos.
 
-Apresentação e Conclusão do Projeto  
+Fase 6: Apresentação e Conclusão do Projeto  
 
     [ nome ] Apresentação do projeto preparada com informações claras e objetivas.
     [ nome ] Conclusões do projeto destacando os resultados e aprendizados.
