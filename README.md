@@ -6,18 +6,18 @@ Fase 1: Análise [ ]
 
 Fase 2: Planejamento [ ] 
 
-     [ nome ] Objetivos do algoritmo definidos com clareza.
-     [ nome ] Métricas para avaliação de eficiência do algoritmo estabelecidas.
-     [ nome ] Estratégia geral de resolução do problema proposta.
-     [ nome ] Subproblemas identificados e divididos, se aplicável.
-     [ nome ] Estrutura geral do algoritmo esboçada.
-     [ nome ] Casos limite ou situações especiais identificados.
-     [ nome ] Análise teórica realizada para verificar a correção do algoritmo.
+    [ nome ] Objetivos do algoritmo definidos com clareza.
+    [ nome ] Métricas para avaliação de eficiência do algoritmo estabelecidas.
+    [ nome ] Estratégia geral de resolução do problema proposta.
+    [ nome ] Subproblemas identificados e divididos, se aplicável.
+    [ nome ] Estrutura geral do algoritmo esboçada.
+    [ nome ] Casos limite ou situações especiais identificados.
+    [ nome ] Análise teórica realizada para verificar a correção do algoritmo.
 
 Fase 3: Desenho [ ] 
 
-     [ nome ] Análise de complexidade realizada para avaliar a eficiência teórica do algoritmo.
-     [ nome ] Pontos críticos do algoritmo identificados para otimização, se necessário.
+    [ nome ] Análise de complexidade realizada para avaliar a eficiência teórica do algoritmo.
+    [ nome ] Pontos críticos do algoritmo identificados para otimização, se necessário.
 
 Fase 4: Programação e Teste [ ] 
 
@@ -29,10 +29,10 @@ Fase 4: Programação e Teste [ ]
 
 Documentação e Avaliação do Projeto [ ] 
 
-     [ nome ] Documentação completa, incluindo especificação do algoritmo e análise de complexidade.
-     [ nome ] Documentação revisada para clareza e rigor técnico.
-     [ nome ] Avaliação da eficácia do algoritmo em termos de tempo de execução, uso de recursos e precisão na resolução do problema.
-     [ nome ] Avaliação da colaboração da equipe e cumprimento dos prazos.
+    [ nome ] Documentação completa, incluindo especificação do algoritmo e análise de complexidade.
+    [ nome ] Documentação revisada para clareza e rigor técnico.
+    [ nome ] Avaliação da eficácia do algoritmo em termos de tempo de execução, uso de recursos e precisão na resolução do problema.
+    [ nome ] Avaliação da colaboração da equipe e cumprimento dos prazos.
 
 Apresentação e Conclusão do Projeto [ ] 
 
