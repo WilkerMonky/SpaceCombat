@@ -1,4 +1,4 @@
-### **Alunos:**
+### **Criadores:**
 - **Atos Santana Antunes** - Matrícula: 29715776  
 - **Gabriel Dantas Viana Ferreira** - Matrícula: 29338123  
 - **Weslley Wilker Oliveira da Costa** - Matrícula: 32089660  
@@ -20,11 +20,37 @@ O SpaceCombat apresenta uma complexidade computacional gerenciada por estratégi
 - **Detecção de Colisões: Realizada entre mísseis e inimigos com complexidade O(m × n), otimizando com remoção rápida de objetos destruídos ou fora da tela.**
 - **Disparos Automáticos: Os inimigos verificam o cooldown antes de disparar, com complexidade O(n).**
 - **Renderização: A interface gráfica processa todos os elementos visíveis por frame com complexidade O(n), limitada a 60 FPS.**
+
 Gerenciamento:
 - **Estratégias como remoção de objetos desnecessários, cálculo oportuno, e limitação de FPS mantêm o desempenho estável.**
 - **A dificuldade escala gradualmente, equilibrando a complexidade do jogo com a capacidade do hardware.**
 
 ---
+### **Objetivo do Jogo:**
+- **O jogador deve pilotar sua nave espacial, destruir naves inimigas e desviar de seus ataques para sobreviver o maior tempo possível.**
+- **Pontos são ganhos ao destruir inimigos e sobreviver mais tempo. O objetivo final é alcançar a maior pontuação possível.**
+  
+---
+### **Jogabilidade:**
+Teclas de Movimento:
+- **Seta para cima (↑) ou a tecla (W): Move a nave para cima.**
+- **Seta para baixo (↓) ou a tecla (S): Move a nave para baixo.**
+- **Seta para a esquerda (←) ou a tecla (A): Move a nave para a esquerda.**
+- **Seta para a direita (→) ou a tecla (D): Move a nave para a direita.**
+
+Ataque:
+- **Espaço (Spacebar): Dispara mísseis para destruir naves inimigas.**
+
+Pontuação:
+- **Cada nave inimiga destruída concede 10 pontos.**
+- **Pontos são concedidos por tempo de sobrevivência.**
+- **Um contador de "kills" (inimigos destruídos) também é mantido.**
+
+Perder o Jogo:
+- **A nave do jogador for atingida por um míssil inimigo.**
+- **Ou a nave do jogador colidir com uma nave inimiga.**
+        
+--- 
 Fase 1: Análise  
 
     [ Atos ] Problema selecionado e definido claramente.
