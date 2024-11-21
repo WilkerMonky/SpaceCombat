@@ -48,8 +48,8 @@ Pontuação:
 - **Um contador de "kills" (inimigos destruídos) também é mantido.**
 
 Perder o Jogo:
-- **Se nave do jogador for atingida por um míssil inimigo.**
-- **Se nave do jogador colidir com uma nave inimiga.**
+- **Se a nave do jogador for atingida por um míssil inimigo.**
+- **Se a nave do jogador colidir com uma nave inimiga.**
         
 --- 
 ### **Checklist para o jogo**
