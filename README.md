@@ -1,12 +1,18 @@
-### **Professora:** Kadidja Valéria
-
 ### **Alunos:**
 - **Atos Santana Antunes** - Matrícula: 29715776  
 - **Gabriel Dantas Viana Ferreira** - Matrícula: 29338123  
 - **Weslley Wilker Oliveira da Costa** - Matrícula: 32089660  
 
 ---
+### **Tecnologias Utilizadas**
+- **Python: Linguagem principal utilizada para a lógica do jogo e integração das bibliotecas.**
+- **Pygame: Biblioteca principal para o desenvolvimento de jogos em 2D, fornecendo suporte para gráficos, sons, eventos e controle de entrada do usuário.**
+- **Random: Biblioteca padrão do Python usada para gerar números aleatórios, ideal para criar elementos como movimentação, posição de inimigos ou itens.**
+- **Visual Studio Code**
+- **Git: Controle de versão para gerenciar alterações no código.**
+- **GitHub: Hospedagem de repositórios e colaboração.**
 
+---
 Fase 1: Análise  
 
     [ Atos ] Problema selecionado e definido claramente.
