@@ -1,3 +1,15 @@
+### **Professora:** Kadidja Valéria
+
+### **Alunos:**
+- **Atos Santana Antunes** - Matrícula: 29715776  
+- **Gabriel Dantas Viana Ferreira** - Matrícula: 29338123  
+- **Weslley Wilker Oliveira da Costa** - Matrícula: 32089660  
+- **Gustavo Emanuel Abreu Ribeiro** - Matrícula: 32237740  
+- **João Pedro de Megalhães Coutinho** - Matrícula: 29982588  
+- **Bruna Carvalho Silva** - Matrícula: 30542260  
+
+---
+
 Fase 1: Análise  
 
     [ Atos ] Problema selecionado e definido claramente.
