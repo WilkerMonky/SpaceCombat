@@ -233,6 +233,20 @@ while loop:
     # Ajustar o cooldown de disparo baseado na onda
     missile_cooldown = max(100, 500 - (wave_number * 20))  # Reduz 20ms por onda, mínimo de 100ms
 
+    # Geração inicial de inimigos, caso a lista esteja vazia
+    if not enemies:
+        enemies = generate_wave(
+            enemy_ship_images,  # Lista de imagens de naves inimigas
+            enemy_count, 
+            min_spacing=2, 
+            width=50, 
+            height=50, 
+            speed_factor=enemy_speed_factor
+        )
+        wave_number += 1
+        enemy_speed_factor += 0.1
+        enemy_count += 2
+
     player_ship.move(teclas)
 
     current_time = pygame.time.get_ticks()
@@ -256,19 +270,6 @@ while loop:
         missile.move()
         if missile.is_off_screen(540):
             missiles.remove(missile)
-
-        if not enemies:
-            enemies = generate_wave(
-                enemy_ship_images,  # Lista de imagens de naves inimigas
-                enemy_count, 
-                min_spacing=2, 
-                width=50, 
-                height=50, 
-                speed_factor=enemy_speed_factor
-            )
-            wave_number += 1
-            enemy_speed_factor += 0.1
-            enemy_count += 2
 
     for enemy in enemies[:]:
         enemy.move()
@@ -317,6 +318,7 @@ while loop:
         record = score
         save_record(record, record_kills)
 
+    # Atualizar tela de jogo
     window.blit(background_image, (0, background_y))
     window.blit(background_image, (0, background_y - 540))
     player_ship.draw(window)
@@ -327,6 +329,7 @@ while loop:
     for enemy_missile in enemy_missiles:
         enemy_missile.draw(window)
 
+    # Desenhar pontuações e recordes
     draw_score(score)
     draw_record(record)
     draw_kills(kills)
