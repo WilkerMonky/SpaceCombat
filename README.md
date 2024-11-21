@@ -23,7 +23,7 @@ Fase 4: Programação e Teste [ ]
 
     [ nome ] Algoritmo traduzido com precisão em código de programação.
     [ nome ] Código de programação escrito de forma clara e organizada.
-    [ nome ]  Testes rigorosos realizados em uma variedade de casos de teste.
+    [ nome ] Testes rigorosos realizados em uma variedade de casos de teste.
     [ nome ] Casos limite e situações especiais testados.
     [ nome ] Erros e problemas durante o teste de programa identificados e corrigidos.
 
