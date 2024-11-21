@@ -52,6 +52,7 @@ Perder o Jogo:
 - **Se nave do jogador colidir com uma nave inimiga.**
         
 --- 
+### **Checklist para o jogo**
 Fase 1: Análise  
 
     [ Atos ] Problema selecionado e definido claramente.
