@@ -231,7 +231,7 @@ while loop:
         continue
 
     # Ajustar o cooldown de disparo baseado na onda
-    missile_cooldown = max(100, 500 - (wave_number * 20))  # Reduz 20ms por onda, mínimo de 100ms
+    missile_cooldown = max(100, 500 - (wave_number * 50))  # Reduz 20ms por onda, mínimo de 100ms
 
     # Geração inicial de inimigos, caso a lista esteja vazia
     if not enemies:
