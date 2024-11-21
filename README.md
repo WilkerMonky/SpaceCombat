@@ -15,14 +15,14 @@
 ---
 ### **Identificação da Complexidade do Jogo**
 O SpaceCombat apresenta uma complexidade computacional gerenciada por estratégias de otimização e uso eficiente de algoritmos. As principais operações incluem:
--- **Movimentação e Atualização: A atualização dos objetos por frame possui complexidade O(n), com remoção de itens fora da tela para manter listas enxutas.**
--- **Geração de Inimigos: A criação de inimigos verifica colisões iniciais com complexidade O(k × n). O número de inimigos é controlado para evitar sobrecarga.**
--- **Detecção de Colisões: Realizada entre mísseis e inimigos com complexidade O(m × n), otimizando com remoção rápida de objetos destruídos ou fora da tela.**
--- **Disparos Automáticos: Os inimigos verificam o cooldown antes de disparar, com complexidade O(n).**
--- **Renderização: A interface gráfica processa todos os elementos visíveis por frame com complexidade O(n), limitada a 60 FPS.**
+- **Movimentação e Atualização: A atualização dos objetos por frame possui complexidade O(n), com remoção de itens fora da tela para manter listas enxutas.**
+- **Geração de Inimigos: A criação de inimigos verifica colisões iniciais com complexidade O(k × n). O número de inimigos é controlado para evitar sobrecarga.**
+- **Detecção de Colisões: Realizada entre mísseis e inimigos com complexidade O(m × n), otimizando com remoção rápida de objetos destruídos ou fora da tela.**
+- **Disparos Automáticos: Os inimigos verificam o cooldown antes de disparar, com complexidade O(n).**
+- **Renderização: A interface gráfica processa todos os elementos visíveis por frame com complexidade O(n), limitada a 60 FPS.**
 Gerenciamento:
--- **Estratégias como remoção de objetos desnecessários, cálculo oportuno, e limitação de FPS mantêm o desempenho estável.**
--- **A dificuldade escala gradualmente, equilibrando a complexidade do jogo com a capacidade do hardware.**
+- **Estratégias como remoção de objetos desnecessários, cálculo oportuno, e limitação de FPS mantêm o desempenho estável.**
+- **A dificuldade escala gradualmente, equilibrando a complexidade do jogo com a capacidade do hardware.**
 
 ---
 Fase 1: Análise  
