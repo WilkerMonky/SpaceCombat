@@ -1,96 +1,165 @@
-### **Criadores:**
-- **Atos Santana Antunes** - Matrícula: 29715776  
-- **Gabriel Dantas Viana Ferreira** - Matrícula: 29338123  
-- **Weslley Wilker Oliveira da Costa** - Matrícula: 32089660  
+# Space Combat - Documentação do Autômato
 
----
-### **Tecnologias Utilizadas**
-- **Python: Linguagem principal utilizada para a lógica do jogo e integração das bibliotecas.**
-- **Pygame: Biblioteca principal para o desenvolvimento de jogos em 2D, fornecendo suporte para gráficos, sons, eventos e controle de entrada do usuário.**
-- **Random: Biblioteca padrão do Python usada para gerar números aleatórios, ideal para criar elementos como movimentação, posição de inimigos ou itens.**
-- **Visual Studio Code**
-- **Git: Controle de versão para gerenciar alterações no código.**
-- **GitHub: Hospedagem de repositórios e colaboração.**
+## Sumário
+1. [Tema e Tipo de Autômato](#1-tema-e-tipo-de-autômato)
+2. [Regras do Sistema](#2-regras-do-sistema)
+3. [Diagrama do Autômato](#3-diagrama-do-autômato)
+4. [Explicação do Autômato](#4-explicação-do-autômato)
+5. [Implementação](#5-implementação)
 
----
-### **Identificação da Complexidade do Jogo**
-O SpaceCombat apresenta uma complexidade computacional gerenciada por estratégias de otimização e uso eficiente de algoritmos. As principais operações incluem:
-- **Movimentação e Atualização: A atualização dos objetos por frame possui complexidade O(n), com remoção de itens fora da tela para manter listas enxutas.**
-- **Geração de Inimigos: A criação de inimigos verifica colisões iniciais com complexidade O(k × n). O número de inimigos é controlado para evitar sobrecarga.**
-- **Detecção de Colisões: Realizada entre mísseis e inimigos com complexidade O(m × n), otimizando com remoção rápida de objetos destruídos ou fora da tela.**
-- **Disparos Automáticos: Os inimigos verificam o intervalo antes de disparar, com complexidade O(n).**
-- **Renderização: A interface gráfica processa todos os elementos visíveis por frame com complexidade O(n), limitada a 60 FPS.**
+## 1. Tema e Tipo de Autômato
+O jogo Space Combat é modelado como um **Autômato Finito Determinístico (AFD)**, pois possui estados bem definidos e transições determinísticas, onde cada ação leva a um único estado possível.
 
-Gerenciamento:
-- **Estratégias como remoção de objetos desnecessários, cálculo oportuno, e limitação de FPS mantêm o desempenho estável.**
-- **A dificuldade escala gradualmente, equilibrando a complexidade do jogo com a capacidade do hardware.**
+## 2. Regras do Sistema
 
----
-### **Objetivo do Jogo**
-- **O jogador deve pilotar sua nave espacial, destruir naves inimigas e desviar de seus ataques para sobreviver o maior tempo possível.**
-- **Pontos são ganhos ao destruir inimigos e sobreviver mais tempo.**
-- **O objetivo final é alcançar a maior pontuação possível.**
-  
----
-### **Jogabilidade**
-Teclas de Movimento:
-- **Seta para cima (↑) ou a tecla (W): Move a nave para cima.**
-- **Seta para baixo (↓) ou a tecla (S): Move a nave para baixo.**
-- **Seta para a esquerda (←) ou a tecla (A): Move a nave para a esquerda.**
-- **Seta para a direita (→) ou a tecla (D): Move a nave para a direita.**
+### Objetivo do Jogo
+O jogador controla uma nave espacial e deve sobreviver o máximo tempo possível, destruindo naves inimigas e evitando seus mísseis.
 
-Ataque:
-- **Espaço (Spacebar): Dispara mísseis para destruir naves inimigas.**
+### Regras Principais
+1. **Controle da Nave**
+   - Setas direcionais ou WASD movem a nave
+   - Barra de espaço dispara mísseis
 
-Pontuação:
-- **Cada nave inimiga destruída concede 10 pontos.**
-- **Pontos são concedidos por tempo de sobrevivência.**
-- **Um contador de "kills" (inimigos destruídos) também é mantido.**
+2. **Sistema de Pontuação**
+   - Score aumenta com o tempo de sobrevivência
+   - Kills aumentam ao destruir naves inimigas
 
-Perder o Jogo:
-- **Se a nave do jogador for atingida por um míssil inimigo.**
-- **Se a nave do jogador colidir com uma nave inimiga.**
-        
---- 
-### **Checklist para o jogo**
-Fase 1: Análise  
+3. **Condições de Game Over**
+   - Colisão com míssil inimigo
 
-    [ Atos ] Problema selecionado e definido claramente.
-    [ Gabriel ] Compreensão aprofundada da natureza e desafios do problema.
-    [ Wilker ] Modelo matemático ou teórico desenvolvido para representar o problema.
+4. **Sistema de Recordes**
+   - Maior pontuação (score) é salva
+   - Maior número de kills é salvo
 
-Fase 2: Planejamento 
+## 3. Diagrama do Autômato
 
-    [ Atos e Wilker ] Objetivos do algoritmo definidos com clareza.
-    [ Atos ] Métricas para avaliação de eficiência do algoritmo estabelecidas.
-    [ Wilker ] Estratégia geral de resolução do problema proposta.
-    [ Gabriel ] Subproblemas identificados e divididos, se aplicável.
-    [ Wilker ] Estrutura geral do algoritmo esboçada.
-    [ Gabriel ] Casos limite ou situações especiais identificados.
-    [ Atos ] Análise teórica realizada para verificar a correção do algoritmo.
+O autômato do jogo possui os seguintes estados e transições:
 
-Fase 3: Desenho 
+```mermaid
+stateDiagram-v2
+    [*] --> Inicial: Iniciar Jogo
+    Inicial --> Jogando: Começo da Partida
+    Jogando --> Movimentação: Teclas Direcionais
+    Movimentação --> Jogando: Soltar Tecla
+    Jogando --> Atirando: Tecla Espaço
+    Atirando --> Jogando: Cooldown
+    Jogando --> NovaOnda: Inimigos Eliminados
+    NovaOnda --> Jogando: Gerar Inimigos
+    Jogando --> GameOver: Colisão com Míssil
+    GameOver --> Jogando: Botão Restart
+    Jogando --> [*]: Fechar Jogo
+    GameOver --> [*]: Fechar Jogo
+```
 
-    [ Atos ] Análise de complexidade realizada para avaliar a eficiência teórica do algoritmo.
-    [ Atos ] Pontos críticos do algoritmo identificados para otimização, se necessário.
+## 4. Explicação do Autômato
 
-Fase 4: Programação e Teste 
+### Estados
+1. **Inicial**
+   - Estado inicial do jogo
+   - Inicialização de variáveis e recursos
 
-    [ Wilker ] Algoritmo traduzido com precisão em código de programação.
-    [ Wilker ] Código de programação escrito de forma clara e organizada.
-    [ Atos e Wilker ] Testes rigorosos realizados em uma variedade de casos de teste.
-    [ Gabriel ] Casos limite e situações especiais testados.
-    [ Atos ] Erros e problemas durante o teste de programa identificados e corrigidos.
+2. **Jogando**
+   - Estado principal onde ocorre a gameplay
+   - Controle da nave
+   - Gerenciamento de inimigos
+   - Atualização de pontuação
 
-Fase 5: Documentação e Avaliação do Projeto  
+3. **Movimentação**
+   - Sub-estado de Jogando
+   - Controle da posição da nave
+   - Limitação de movimento nas bordas
 
-    [ Gabriel ] Documentação completa, incluindo especificação do algoritmo e análise de complexidade.
-    [ Gabriel ] Documentação revisada para clareza e rigor técnico.
-    [ Gabriel ] Avaliação da eficácia do algoritmo em termos de tempo de execução, uso de recursos e precisão na resolução do problema.
-    [ Gabriel ] Avaliação da colaboração da equipe e cumprimento dos prazos.
+4. **Atirando**
+   - Sub-estado de Jogando
+   - Criação de mísseis
+   - Controle de cooldown
 
-Fase 6: Apresentação e Conclusão do Projeto  
+5. **NovaOnda**
+   - Geração de nova onda de inimigos
+   - Aumento de dificuldade
 
-    [ Atos ] Apresentação do projeto preparada com informações claras e objetivas.
-    [ Gabriel ] Conclusões do projeto destacando os resultados e aprendizados.
-    [ Wilker ] Discussão sobre o projeto e respostas a perguntas da audiência.
+6. **GameOver**
+   - Exibição de pontuação final
+   - Verificação de recordes
+   - Opção de reinício
+
+### Transições
+- As transições são determinísticas, pois cada entrada (ação do jogador ou evento do jogo) leva a um único estado possível
+- Exemplo de código que controla as transições:
+
+```python
+# Transição para GameOver
+if player_rect.colliderect(enemy_missile_rect):
+    game_over = True
+
+# Transição para NovaOnda
+if not enemies:
+    enemies = generate_wave(
+        enemy_ship_images,
+        enemy_count,
+        min_spacing=2,
+        width=50,
+        height=50,
+        speed_factor=enemy_speed_factor
+    )
+```
+
+## 5. Implementação
+
+O jogo está implementado em Python usando Pygame. Principais componentes:
+
+### Classes
+- `Space_Ship`: Nave do jogador
+- `Enemy_Ship`: Naves inimigas
+- `Missile`: Sistema de mísseis
+
+### Controle de Estados
+```python
+# Loop principal que controla os estados
+while loop:
+    if game_over:
+        # Estado GameOver
+        draw_game_over()
+        draw_score(score)
+        draw_restart_button()
+    else:
+        # Estado Jogando
+        player_ship.move(teclas)
+        update_missiles()
+        update_enemies()
+        check_collisions()
+```
+
+### Sistema de Pontuação
+```python
+# Atualização de recordes
+if game_over and score > record:
+    record = score
+    save_record(record, record_kills)
+```
+
+### Características Determinísticas
+O jogo é determinístico pois:
+- Cada ação do jogador tem uma consequência específica
+- As transições entre estados são claras e únicas
+- O sistema de colisões e pontuação segue regras bem definidas
+- Não há elementos aleatórios que afetem as transições entre estados principais
+
+Esta implementação demonstra como um AFD pode modelar efetivamente um jogo de arcade, onde os estados e transições são claramente definidos e determinísticos.
+
+## Como Executar o Jogo
+
+1. Certifique-se de ter Python instalado
+2. Instale as dependências:
+```bash
+pip install pygame
+```
+3. Execute o jogo:
+```bash
+python main.py
+```
+
+## Controles
+- Setas direcionais ou WASD: Movimento da nave
+- Barra de espaço: Disparo de mísseis
+- ESC: Sair do jogo
